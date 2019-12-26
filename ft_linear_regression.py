@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 from gestion_data import gestion_data
 import matplotlib.pyplot as plt
 
@@ -148,6 +149,13 @@ class ft_linear_regression(gestion_data):
         plt.yticks()
         plt.show()
 
+    def create_result(self, teta0, teta1):
+        if os.path.exists("result.txt"):
+            os.remove("result.txt")
+        f = open("result.txt", "w+")
+        f.write(str(teta0) + "," + str(teta1) + "\n")
+        f.close()
+
 
 if __name__ == '__main__':
     gestion_data = gestion_data()
@@ -155,6 +163,8 @@ if __name__ == '__main__':
 
     ft_linear_regression = ft_linear_regression(gestion_data)
     ft_linear_regression.print_all_value()
+    ft_linear_regression.create_result(
+        ft_linear_regression.teta0, ft_linear_regression.teta1)
     ft_linear_regression.generate_matploit_graph(
         ft_linear_regression.km_values, ft_linear_regression.price_values, ft_linear_regression.price_linear_regression_values)
 

@@ -49,8 +49,8 @@ class gestion_data:
                 'price'
             )
             validator = CSVValidator(field_names)
-            validator.add_value_check('km', str, 'km must be an int')
-            validator.add_value_check('price', str, 'km must be an int')
+            validator.add_value_check('km', str, 'km must be a float')
+            validator.add_value_check('price', str, 'km must be a float')
             data = csv.reader(file, delimiter=',')
             problems = validator.validate(data)
             # write_problems(problems, sys.stdout)
