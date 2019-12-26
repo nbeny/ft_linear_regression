@@ -53,9 +53,12 @@ class ft_calculator:
             exit(42)
 
     def calcul_price_with_teta_value(self, teta0, teta1, km):
-        return teta0 + (teta1 * float(km))
+        return teta1 + (teta0 * float(km))
 
 
 if __name__ == '__main__':
-    ft_calculator = ft_calculator()
-    print(ft_calculator.result)
+    try:
+        ft_calculator = ft_calculator()
+        print(ft_calculator.result)
+    except:
+        exit(42)
