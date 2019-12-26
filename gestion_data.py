@@ -14,8 +14,6 @@ class gestion_data:
         self.fd = []
         self.options = self.get_arguments()
         self.file = self.options.file
-        self.km = self.options.km
-        self.price = self.options.price
         if self.validate_csv_file(self.file):
             self.content = self.open_and_read_csv_file(self.file)
             self.array_km = self.get_kilometer_from_csv(self.content)
@@ -29,10 +27,6 @@ class gestion_data:
         print(self.options)
         print("/* ******************** File        ******************** */")
         print(self.file)
-        print("/* ******************** Km          ******************** */")
-        print(self.km)
-        print("/* ******************** Price       ******************** */")
-        print(self.price)
         print("/* ******************** Content     ******************** */")
         print(self.content)
         print("/* ******************** Array Km    ******************** */")
@@ -45,10 +39,6 @@ class gestion_data:
         parser = argparse.ArgumentParser()
         parser.add_argument('-f', '--file', dest='file',
                             help='set the path to csv file.')
-        parser.add_argument('-k', '--km', dest='km',
-                            help='the kilometer of your car')
-        parser.add_argument('-p', '--price', dest='price',
-                            help='the price of your car')
         options = parser.parse_args()
         return options
 
@@ -71,10 +61,15 @@ class gestion_data:
         except:
             print('usage:')
             print(
-                '\tpython ft_linear_regression.py -f CSV_FILE -p PRICE_NUMBER -k KM_NUMBER')
+                '\tpython ft_linear_regression.py -f CSV_FILE')
             print('\tOR')
             print(
-                '\tpython ft_linear_regression.py --file CSV_FILE --price PRICE_NUMBER --km KM_NUMBER')
+                '\tpython ft_linear_regression.py --file CSV_FILE')
+            print('')
+            print('for exit the matploit graph in the terminal use :')
+            print('\tcontol + shift + \\')
+            print('')
+            print('=D')
             exit(42)
 
     def open_and_read_csv_file(self, file):
@@ -95,7 +90,7 @@ class gestion_data:
             for line in whitespace_split:
                 if i != 0 and i != len(whitespace_split) - 1:
                     coma_split = line.split(',')
-                    array_km.append(int(coma_split[0]))
+                    array_km.append(float(coma_split[0]))
                 i += 1
             return array_km
         except:
@@ -110,7 +105,7 @@ class gestion_data:
             for line in whitespace_split:
                 if i != 0 and i != len(whitespace_split) - 1:
                     coma_split = line.split(',')
-                    array_price.append(int(coma_split[1]))
+                    array_price.append(float(coma_split[1]))
                 i += 1
             return array_price
         except:
