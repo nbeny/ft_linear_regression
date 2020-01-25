@@ -116,20 +116,20 @@ class ft_linear_regression(gestion_data):
 
 
 if __name__ == '__main__':
-    # try:
-    gestion_data = gestion_data()
+    try:
+        gestion_data = gestion_data()
 
-    ft_linear_regression = ft_linear_regression(gestion_data)
+        ft_linear_regression = ft_linear_regression(gestion_data)
 
-    ft_linear_regression.print_all_value()
-    # ft_linear_regression.create_result(
-    #     ft_linear_regression.teta0, ft_linear_regression.teta1)
+        ft_linear_regression.print_all_value()
+        # ft_linear_regression.create_result(
+        #     ft_linear_regression.teta0, ft_linear_regression.teta1)
 
-    ft_linear_regression.matploit_printer(
-        ft_linear_regression.line_km, ft_linear_regression.line_price, ft_linear_regression.km_values, ft_linear_regression.price_values
-    )
+        ft_linear_regression.matploit_printer(
+            ft_linear_regression.line_km, ft_linear_regression.line_price, ft_linear_regression.km_values,  ft_linear_regression.price_values
+        )
 
-    del gestion_data
-    del ft_linear_regression
-    # except:
-    # exit(42)
+        del gestion_data
+        del ft_linear_regression
+    except:
+        exit(42)
