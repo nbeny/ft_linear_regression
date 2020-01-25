@@ -35,6 +35,7 @@ class ft_linear_regression(gestion_data):
         self.normalize_teta0 = teta0
         self.normalize_teta1 = teta1
 
+        # nomralize teta value
         self.teta0 = preprocessing.scale(self.normalize_teta0)
         self.teta1 = preprocessing.scale(self.normalize_teta1)
 
