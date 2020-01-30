@@ -4,7 +4,7 @@ import os
 from gestion_data import gestion_data
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import preprocessing
+from sklearn.preprocessing import MinMaxScaler
 
 
 class ft_linear_regression(gestion_data):
@@ -12,32 +12,23 @@ class ft_linear_regression(gestion_data):
         self.epochs = 10
         self.lr = 0.001
 
-        # X = np.linspace(-1, 1, 100) + np.random.normal(0, 0.25, 100)
-        # Y = np.linspace(-1, 1, 100) + np.random.normal(0, 0.25, 100)
-
-        # self.km_values = X
-        # self.price_values = Y
-
         self.km_values = gestion_data.array_km
         self.price_values = gestion_data.array_price
 
-        self.normalized_km_values = preprocessing.normalize(self.km_values)
-        self.normalized_price_values = preprocessing.normalize(
-            self.price_values)
-
-        # self.normalized_km_values = self.normalized_km_values(self.km_values)
-        # self.normalized_price_values = self.normalized_price_values(
-        #     self.price_values)
+        # Normalize dataframe
+        self.normalized_km_values = self.normalized_km(self.km_values)
+        self.normalized_price_values = self.normalized_price(self.price_values)
 
         # Exécution de l'algorithme
-        teta1, teta0 = self.gradient_descent_LR(
+        normalized_array_teta1, normalized_array_teta0 = self.gradient_descent_LR(
             self.normalized_km_values, self.normalized_price_values, self.epochs, self.lr)
-        self.normalize_teta0 = teta0
-        self.normalize_teta1 = teta1
 
-        # nomralize teta value
-        self.teta0 = preprocessing.scale(self.normalize_teta0)
-        self.teta1 = preprocessing.scale(self.normalize_teta1)
+        # Unnormalize dataframe
+        self.array_teta0 = self.unnormalized_teta0(normalized_array_teta0)
+        self.array_teta1 = self.unnormalized_teta1(normalized_array_teta1)
+
+        self.teta0 = self.get_real_teta(self.array_teta0)
+        self.teta1 = self.get_real_teta(self.array_teta1)
 
         self.line_km = self.calculate_line_km(
             self.km_values, self.price_values)
@@ -62,23 +53,66 @@ class ft_linear_regression(gestion_data):
         print(self.line_price)
         print("/* ******************** ************ ******************** */")
 
-    # def normalized_km_values(self, km_values):
-    #     normalized_km_values = []
-    #     idx_km_min = km_values.index(min(km_values))
-    #     idx_km_max = km_values.index(max(km_values))
-    #     for value in km_values:
-    #         normalized_km_values.append(
-    #             (value - km_values[idx_km_min]) / (km_values[idx_km_max] - km_values[idx_km_min]))
-    #     return normalized_km_values
+    def get_real_teta(self, array):
+        teta_total = 0
+        idx = 0
+        for value in array:
+            teta_total += value
+            idx += 1
+        teta = teta_total / idx
+        return teta
 
-    # def normalized_price_values(self, price_values):
-    #     normalized_price_values = []
-    #     idx_price_min = price_values.index(min(price_values))
-    #     idx_price_max = price_values.index(max(price_values))
-    #     for value in price_values:
-    #         normalized_price_values.append((value - price_values[idx_price_min]) / (
-    #             price_values[idx_price_max] - price_values[idx_price_min]))
-    #     return normalized_price_values
+    def normalized_km(self, km_values):
+        normalized_km_values = []
+        idx_km_min = km_values.index(min(km_values))
+        idx_km_max = km_values.index(max(km_values))
+        for value in km_values:
+            normalized_km_values.append(
+                (value - km_values[idx_km_min]) / (km_values[idx_km_max] - km_values[idx_km_min]))
+        return normalized_km_values
+
+    def normalized_price(self, price_values):
+        normalized_price_values = []
+        idx_price_min = price_values.index(min(price_values))
+        idx_price_max = price_values.index(max(price_values))
+        for value in price_values:
+            normalized_price_values.append((value - price_values[idx_price_min]) / (
+                price_values[idx_price_max] - price_values[idx_price_min]))
+        return normalized_price_values
+
+    # unnormalized data set frame
+    # ^x = ( x - min(x) ) / ( max(x) - min(x) )
+    # ^x * ( max(x) - min(x) ) = x - min(x)
+    # x = ^x * ( max(x) - min(x) ) + min(x)
+    def unnormalized_teta0(self, normalized_array_teta0):
+        array_teta0 = []
+        print(normalized_array_teta0)
+        teta0_min = min(float(normalized_teta0_min)
+                        for normalized_teta0_min in normalized_array_teta0)
+        teta0_max = max(float(normalized_teta0_max)
+                        for normalized_teta0_max in normalized_array_teta0)
+        for value in normalized_array_teta0:
+            array_teta0.append(
+                value * (teta0_max - teta0_min) + teta0_min
+            )
+        return array_teta0
+
+    # unnormalized data set frame
+    # ^x = ( x - min(x) ) / ( max(x) - min(x) )
+    # ^x * ( max(x) - min(x) ) = x - min(x)
+    # x = ^x * ( max(x) - min(x) ) + min(x)
+    def unnormalized_teta1(self, normalized_array_teta1):
+        array_teta1 = []
+        print(normalized_array_teta1)
+        teta1_min = min(float(normalized_teta1_min)
+                        for normalized_teta1_min in normalized_array_teta1)
+        teta1_max = max(float(normalized_teta1_max)
+                        for normalized_teta1_max in normalized_array_teta1)
+        for value in normalized_array_teta1:
+            array_teta1.append(
+                value * (teta1_max - teta1_min) + teta1_min
+            )
+        return array_teta1
 
     # gradient teta1 calculator for 1 iteration
     def teta1_grad(self, teta1, teta0, km_values, price_values):
@@ -93,12 +127,16 @@ class ft_linear_regression(gestion_data):
         assert(len(km_values) == len(price_values))
         teta1 = 0
         teta0 = 0
+        array_teta1 = []
+        array_teta0 = []
         for e in range(epochs):
             teta1 = teta1 - lr * \
                 self.teta1_grad(teta1, teta0, km_values, price_values)
             teta0 = teta0 - lr * \
                 self.teta0_grad(teta1, teta0, km_values, price_values)
-        return teta1, teta0
+            array_teta1.append(teta1)
+            array_teta0.append(teta0)
+        return array_teta1, array_teta0
 
     # calcul usefull for the Visualisation of teta1 and teta0
     def calculate_line_km(self, km_values, price_values):
@@ -117,20 +155,20 @@ class ft_linear_regression(gestion_data):
 
 
 if __name__ == '__main__':
-    try:
-        gestion_data = gestion_data()
+    # try:
+    gestion_data = gestion_data()
 
-        ft_linear_regression = ft_linear_regression(gestion_data)
+    ft_linear_regression = ft_linear_regression(gestion_data)
 
-        ft_linear_regression.print_all_value()
-        # ft_linear_regression.create_result(
-        #     ft_linear_regression.teta0, ft_linear_regression.teta1)
+    ft_linear_regression.print_all_value()
+    # ft_linear_regression.create_result(
+    #     ft_linear_regression.teta0, ft_linear_regression.teta1)
 
-        ft_linear_regression.matploit_printer(
-            ft_linear_regression.line_km, ft_linear_regression.line_price, ft_linear_regression.km_values,  ft_linear_regression.price_values
-        )
+    ft_linear_regression.matploit_printer(
+        ft_linear_regression.line_km, ft_linear_regression.line_price, ft_linear_regression.km_values,  ft_linear_regression.price_values
+    )
 
-        del gestion_data
-        del ft_linear_regression
-    except:
-        exit(42)
+    del gestion_data
+    del ft_linear_regression
+    # except:
+    # exit(42)
